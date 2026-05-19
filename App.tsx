@@ -1,10 +1,16 @@
 import { StyleSheet } from "react-native";
-import Login from './app/login/index.js';
 import "./gesture-handler";
 
-export default function login() {
+import { NavigationContainer } from '@react-navigation/native';
+import Routes from './routes/index.routes';
+
+export default function App() {
+
+
     return (
-        <Login />
+        <NavigationContainer>
+            <Routes />
+        </NavigationContainer>
     )
 }
 

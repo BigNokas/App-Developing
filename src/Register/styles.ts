@@ -85,6 +85,13 @@ export const style = StyleSheet.create({
         fontWeight: "bold",
         color: themes.colors.secondary,
         alignSelf: "center"
+    },
+    textBottom: {
+        marginTop: 20,
+        fontSize: 16,
+        fontWeight: "bold",
+        color: themes.colors.black,
+        alignSelf: "center"
     }
 })
 

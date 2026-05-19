@@ -1,12 +1,16 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import List from '../app/list';
-import User from '../app/user';
+import List from '../src/list';
+import User from '../src/user';
 
 const Tab = createBottomTabNavigator();
 
 export default function BottomRoutes() {
     return (
-        <Tab.Navigator>
+        <Tab.Navigator
+            screenOptions={{
+                headerShown: false,
+            }}
+        >
             <Tab.Screen name="List" component={List} />
             <Tab.Screen name="User" component={User} />
         </Tab.Navigator>

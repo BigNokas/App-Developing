@@ -6,6 +6,7 @@ export const themes = {
         lightgray: "#bebebeff",
         gray: "gray",
         darkgray: "#434343ff",
-        bigscreen: "#f1f7fa"
+        bigscreen: "#f1f7fa",
+        blue: "blue"
     }
 }

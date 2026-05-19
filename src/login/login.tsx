@@ -1,7 +1,9 @@
+import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
 import { Alert, Platform, Text, View } from "react-native";
 import { Input } from "../../components/Input";
+import { getDB } from "../../database/database";
 import { themes } from "../../global/themes";
 import styles from "./styles";
 
@@ -10,11 +12,17 @@ import { MaterialIcons, Octicons } from "@expo/vector-icons";
 
 export default function Login() {
 
+  const navigation = useNavigation<NavigationProp<any>>();
+
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [loading, setLoading] = React.useState(false);
   const [showPassword, setShowPassword] = React.useState(true);
 
+  const loginData = {
+    email,
+    password
+  }
 
   async function getLogin() {
     try {
@@ -30,17 +38,47 @@ export default function Login() {
         setLoading(false)
         return
       }
+      const database = await getDB()
+      const user = await (database as any).User
+        .where('email')
+        .equals(email)
+        .toArray()
 
-      console.log('Campos preenchidos. Aguardando 3 segundos...');
-      setTimeout(() => {
-        console.log('Tempo finalizado. Tentando exibir Alert de Sucesso...');
-        if (Platform.OS === 'web') {
-          window.alert('Success: Login')
-        } else {
-          Alert.alert("Success", "Login")
-        }
+      if (user.length === 0) {
         setLoading(false)
-      }, 3000)
+        if (Platform.OS === 'web') {
+          window.alert('Atenção: E-mail não encontrado!')
+        } else {
+          Alert.alert('Atenção', 'E-mail não encontrado!')
+        }
+        return
+      }
+
+      const loggedUser = user[0];
+
+      // Verificar senha
+      if (loggedUser.password !== password) {
+        setLoading(false)
+        if (Platform.OS === 'web') {
+          window.alert('Atenção: Senha incorreta!')
+        } else {
+          Alert.alert('Atenção', 'Senha incorreta!')
+        }
+        return
+      }
+
+      // Login bem-sucedido
+      console.log('Login bem-sucedido! Usuário:', loggedUser.name);
+
+      setTimeout(() => {
+        if (Platform.OS === 'web') {
+          window.alert('Sucesso: Login realizado!')
+        } else {
+          Alert.alert("Sucesso", "Login realizado!")
+        }
+        navigation.navigate("BottomRoutes", { data: loggedUser })
+        setLoading(false)
+      }, 2000)
 
     } catch (error) {
       console.log('Error Login', error)
@@ -74,6 +112,9 @@ export default function Login() {
         onPress={() => getLogin()}
         loading={loading}
       />
+      <Text style={styles.textBottom}>
+        Não tem uma conta? <Text style={{ ...styles.textBottom, color: themes.colors.blue }} onPress={() => navigation.navigate("Register")}>Cadastre-se</Text>
+      </Text>
     </LinearGradient>
   )
 }
